@@ -16,6 +16,7 @@ namespace RiggedXR
 
         public bool hasOpenXR;
         public bool hasOpenXRInitialized;
+        public bool hasXRToolkit;
 
         private bool busy;
         
@@ -31,6 +32,7 @@ namespace RiggedXR
 
             hasOpenXR = IsPackageInstalled("com.unity.xr.openxr");
             hasOpenXRInitialized = IsOpenXRInitialized();
+            hasXRToolkit = IsPackageInstalled("com.unity.xr.interaction.toolkit");
             
             if (hasOpenXR)
             {
@@ -50,6 +52,15 @@ namespace RiggedXR
                 EditorGUILayout.Toggle("OpenXR Loader Initialized", false);
             }
             
+            if (hasXRToolkit)
+            {
+                EditorGUILayout.Toggle("XR Interaction Toolkit Installed", true);
+            }
+            else
+            {
+                EditorGUILayout.Toggle("XR Interaction Toolkit Installed", false);
+            }
+            
             if (DetectIssues())
             {
                 if (!busy)
@@ -66,6 +77,44 @@ namespace RiggedXR
                 
                 
                 EditorGUILayout.HelpBox("Issues Detected!", MessageType.Error, true);
+            }
+            else
+            {
+                if (GUILayout.Button("Setup RiggedXR Scene"))
+                {
+                    SetupScene();
+                }
+            }
+        }
+
+        private void SetupScene()
+        {
+            
+            
+            RiggedXRSettings settings = (RiggedXRSettings)Resources.Load("RiggedXRSettings");
+            if (settings)
+            {
+                if (!FindObjectOfType<RiggedXR>())
+                {
+                    PrefabUtility.InstantiatePrefab(settings.RiggedXRPrefab);
+                }
+                else
+                {
+                    Debug.LogWarning("Already have a RiggedXR Object in the scene, adding multiple could cause issues unless you've modified it yourself!");
+                }
+
+                if (!FindObjectOfType<RiggedXRPlayer>())
+                {
+                    PrefabUtility.InstantiatePrefab(settings.RiggedPlayerPrefab);
+                }
+                else
+                {
+                    Debug.LogWarning("Already have a RiggedXR Player Object in the scene, adding multiple could cause issues unless you've modified it yourself!");
+                }
+            }
+            else
+            {
+                Debug.LogError("Missing Rigged XR Settings in Resources Folder!");
             }
         }
 
@@ -98,6 +147,15 @@ namespace RiggedXR
             if (!hasOpenXRInitialized)
             {
                 Debug.LogError("Please Initialize OpenXR under (Edit -> Project Settings -> XR Plugin Management)");
+                busy = false;
+                
+                return;
+            }
+
+            if (!hasXRToolkit)
+            {
+                Request = Client.Add("com.unity.xr.interaction.toolkit");
+                EditorApplication.update += Progress;
                 
                 return;
             }
@@ -125,6 +183,11 @@ namespace RiggedXR
             }
 
             if (!hasOpenXRInitialized)
+            {
+                return true;
+            }
+
+            if (!hasXRToolkit)
             {
                 return true;
             }

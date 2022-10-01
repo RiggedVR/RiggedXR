@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeeae0ed22d2ec24d935e31ad3e99427, type: 3}
+  m_Name: RiggedXRSettings
+  m_EditorClassIdentifier: 
+  RiggedXRPrefab: {fileID: 8033711284040457500, guid: 9e630fdd4c2a35c4c9a159593982dd07,
+    type: 3}
+  RiggedPlayerPrefab: {fileID: 335523961608002647, guid: 19f6d0ab6ec4c8147ab736265805395e,
+    type: 3}
